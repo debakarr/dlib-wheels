@@ -42,19 +42,15 @@ jobs:
         shell: bash
         run: python3 -m cibuildwheel $REPO_DIR --output-dir wheelhouse
 
-      - name: Save wheels
+      - name: Save wheels as artifact
         uses: actions/upload-artifact@v3
         with:
           path: ./wheelhouse/*.whl
-
-  upload_to_github:
-    needs: [build_wheels]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: xresloader/upload-to-github-release@v1
+      - name: Upload wheels to release
+        uses: xresloader/upload-to-github-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          file: "dist/*.whl"
+          file: "./wheelhouse/*.whl"
           tags: true
           draft: true
